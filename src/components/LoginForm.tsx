@@ -1,7 +1,8 @@
 import { useEffect, useState, FormEvent } from "react";
+import { User } from "../types/User";
 
 interface LoginFormProps {
-  onLogin: (user: any) => void;
+  onLogin: (user: User) => void;
 }
 
 interface Entity {

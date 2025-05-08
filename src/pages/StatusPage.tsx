@@ -8,7 +8,37 @@ interface OrderStatusProps {
   user: User | null; // Receive the user prop
 }
 
-const mapOrderResponse = (raw: any): Order => {
+type RawOrder = {
+  id: string;
+  status: string;
+  remark?: string;
+  diningTable?: {
+    number?: number;
+  };
+  waiter?: {
+    username?: string;
+  };
+  items?: RawOrderItem[];
+};
+
+type RawOrderItem = {
+  id: string;
+  quantity: number;
+  food?: {
+    name?: string;
+  };
+  options?: RawOption[];
+};
+
+type RawOption = {
+  id: string;
+  quantity: number;
+  option?: {
+    name?: string;
+  };
+};
+
+const mapOrderResponse = (raw: RawOrder): Order => {
   return {
     id: raw.id,
     status: raw.status,
@@ -16,12 +46,12 @@ const mapOrderResponse = (raw: any): Order => {
     tableNumber: raw.diningTable?.number?.toString() ?? "-",
     waiterName: raw.waiter?.username ?? "-",
     items: Array.isArray(raw.items)
-      ? raw.items.map((item: any) => ({
+      ? raw.items.map((item: RawOrderItem) => ({
           id: item.id,
           foodName: item.food?.name ?? "Unknown",
           quantity: item.quantity,
           options: Array.isArray(item.options)
-            ? item.options.map((opt: any) => ({
+            ? item.options.map((opt: RawOption) => ({
                 id: opt.id,
                 name: opt.option?.name ?? "Option Name Not Found",
                 quantity: opt.quantity,

@@ -13,5 +13,15 @@ export type FoodItem = {
   price: number;
   selected: boolean;
   quantity: number;
-  options?: FoodOption[];
+  options: FoodOption[];
+};
+
+// API response types (from backend, before adding `selected` and `quantity`)
+export type APIFoodOption = Omit<FoodOption, "selected" | "quantity">;
+
+export type APIFoodItem = Omit<
+  FoodItem,
+  "selected" | "quantity" | "options"
+> & {
+  options: APIFoodOption[];
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
-import { FoodItem } from "../types/Food";
+import { FoodItem, APIFoodItem } from "../types/Food";
 import { User } from "../types/User";
 import { DiningTable } from "../types/DiningTable";
 
@@ -20,19 +20,14 @@ export default function OrderEntry({ user }: OrderEntryProps) {
       // Ensure user and entity are available
       fetchWithAuth(`/api/foods?entityId=${user.entityId}`)
         .then((res) => res.json())
-        .then((foods) => {
-          const formatted = foods.map((f: any) => ({
-            id: f.id,
-            name: f.name,
-            price: f.price,
+        .then((foods: APIFoodItem[]) => {
+          const formatted: FoodItem[] = foods.map((f) => ({
+            ...f,
             selected: false,
             quantity: 1,
             options:
-              f.options?.map((opt: any) => ({
-                id: opt.id,
-                name: opt.name,
-                available: opt.available,
-                extraPrice: opt.extraPrice,
+              f.options?.map((opt) => ({
+                ...opt,
                 selected: false,
                 quantity: 1,
               })) ?? [],
@@ -189,7 +184,7 @@ export default function OrderEntry({ user }: OrderEntryProps) {
       }));
       setMenu(resetMenu);
       setOrderRemark("");
-      setSelectedTableId(null);
+      setSelectedTableId("");
     } catch (err) {
       console.error(err);
       alert("Failed to submit order.");
